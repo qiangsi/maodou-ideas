@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#F8F5F0">
+<title>毛豆灵感 · 想到什么，说一句就记下</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:#F8F5F0;color:#1F1E1B;min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body::before,body::after{content:"";position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(60px)}
+body::before{width:420px;height:420px;top:-160px;left:-140px;background:radial-gradient(circle,rgba(135,168,120,.28),rgba(135,168,120,0) 70%)}
+body::after{width:360px;height:360px;top:360px;right:-160px;background:radial-gradient(circle,rgba(216,149,117,.16),rgba(216,149,117,0) 70%)}
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:0 20px calc(48px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;padding:22px 0 8px}
+.brand{display:flex;align-items:center;gap:9px}
+.brand svg{width:32px;height:32px;display:block}
+.brand strong{font-size:19px;font-weight:600;letter-spacing:.2px}
+.header-note{font-size:12px;color:#9B978E}
+.hero{padding:22px 0 26px}
+.badge{display:inline-flex;align-items:center;gap:7px;background:#E8F0E2;color:#4E7042;font-size:12px;font-weight:500;padding:7px 13px;border-radius:50px}
+.badge i{width:7px;height:7px;background:#87A878;border-radius:50%;display:block}
+h1{font-size:34px;line-height:1.28;font-weight:600;margin:18px 0 12px;letter-spacing:-.5px}
+h1 em{font-style:normal;color:#4E7042}
+.hero p{margin:0;font-size:14px;line-height:1.8;color:#5C5A55;max-width:420px}
+.card{background:#fff;border-radius:24px;padding:22px;box-shadow:0 12px 36px rgba(79,112,66,.08);border:1px solid rgba(220,229,212,.7)}
+.card+.card{margin-top:18px}
+.card-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title h2{font-size:17px;font-weight:600;margin:0}
+.save{display:flex;align-items:center;gap:6px;font-size:11px;color:#9B978E}
+.save i{width:6px;height:6px;background:#87A878;border-radius:50%;display:block}
+.tabs{display:flex;background:#F1EEE8;border-radius:50px;padding:4px;gap:4px;margin-bottom:18px}
+.tab{flex:1;border:0;background:transparent;border-radius:50px;height:38px;font-size:14px;color:#8A877F;font-family:inherit;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
+.tab svg{width:15px;height:15px}
+.tab.on{background:#fff;color:#4E7042;font-weight:600;box-shadow:0 2px 8px rgba(79,112,66,.10)}
+.panel{display:none}
+.panel.on{display:block}
+textarea{width:100%;min-height:120px;resize:none;border:1px solid #E5E8DF;background:#FBF9F5;border-radius:16px;padding:16px;font-family:inherit;font-size:15px;line-height:1.7;color:#1F1E1B;outline:none;-webkit-appearance:none}
+textarea:focus{border-color:#B9CFAF;background:#fff}
+textarea::placeholder{color:#9B978E}
+.count-row{display:flex;justify-content:space-between;font-size:11px;color:#9B978E;margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 20px}
+.chip{font-size:12px;padding:8px 14px;border-radius:50px;border:1px solid #E4E1D9;background:#fff;color:#5C5A55;font-family:inherit;cursor:pointer}
+.chip.on{background:#E8F0E2;border-color:#E8F0E2;color:#4E7042;font-weight:500}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border:0;border-radius:50px;background:#4E7042;color:#fff;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer}
+.btn:active{transform:scale(.985);background:#436237}
+.btn svg{width:16px;height:16px}
+.btn[disabled]{background:#C8D4BD;cursor:not-allowed}
+/* voice */
+.voice-stage{background:#2F4430;border-radius:20px;padding:24px 16px;text-align:center;color:#fff}
+.wave{display:flex;align-items:center;justify-content:center;gap:4px;height:52px;margin-bottom:6px}
+.wave span{width:4px;height:10px;border-radius:4px;background:#A9C69A;opacity:.65;transition:height .12s ease}
+.wave.active span{animation:pulse 1s ease-in-out infinite;opacity:1}
+.wave.active span:nth-child(2n){animation-delay:.15s}
+.wave.active span:nth-child(3n){animation-delay:.3s}
+.wave.active span:nth-child(5n){animation-delay:.45s}
+@keyframes pulse{0%,100%{height:10px}50%{height:44px}}
+.timer{font-size:28px;font-weight:600;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.voice-tip{font-size:12px;color:#A9C69A;margin-top:8px;min-height:18px}
+.rec-btn{margin:20px auto 0;width:76px;height:76px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:#D89575;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:none;box-shadow:0 0 0 8px rgba(216,149,117,.14)}
+.rec-btn:active,.rec-btn.recording{background:#C67F61;box-shadow:0 0 0 14px rgba(216,149,117,.2)}
+.rec-btn i{display:block;width:18px;height:18px;background:#fff;border-radius:4px}
+.rec-btn.recording i{border-radius:50%;width:20px;height:20px}
+.rec-label{font-size:13px;color:#5C5A55;text-align:center;margin:14px 0 18px}
+.alt{display:block;text-align:center;font-size:13px;color:#4E7042;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-bottom:18px}
+.alt input{display:none}
+.clip-preview{margin:0 0 16px;padding:14px;border-radius:16px;background:#EDF3E8;font-size:13px;color:#4E7042}
+.clip-preview audio{width:100%;height:34px;margin-top:8px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:34px 0 14px}
+.sec-head h2{font-size:20px;font-weight:600;margin:0}
+.sec-head span{font-size:12px;color:#87A878}
+.idea{background:#fff;border:1px solid #EDEAE3;border-radius:18px;padding:16px;margin-bottom:12px}
+.idea.voice{background:#EDF3E8;border-color:#DCE5D4}
+.idea-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.idea-tag{font-size:11px;padding:5px 11px;border-radius:50px;background:#E8F0E2;color:#4E7042}
+.idea.voice .idea-tag{background:#fff}
+.idea-meta{font-size:11px;color:#9B978E}
+.idea-body{font-size:14px;line-height:1.75;word-break:break-word;white-space:pre-wrap}
+.idea audio{width:100%;height:34px;margin:10px 0 4px}
+.idea-del{border:0;background:transparent;color:#B7B3AA;font-size:12px;font-family:inherit;padding:4px 0 0;cursor:pointer;margin-top:8px}
+.empty{text-align:center;padding:34px 16px;color:#9B978E;font-size:13px;line-height:1.9;background:#fff;border:1px dashed #DCE5D4;border-radius:18px}
+details{margin-top:32px;background:#fff;border:1px solid #EDEAE3;border-radius:18px;overflow:hidden}
+summary{padding:16px;font-size:14px;font-weight:500;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:18px;color:#87A878;font-weight:400}
+details[open] summary::after{content:"−"}
+details img{width:100%;display:block;border-top:1px solid #EDEAE3}
+footer{text-align:center;font-size:11px;color:#9B978E;line-height:1.9;padding:30px 8px 10px}
+.toast{position:fixed;left:50%;bottom:calc(34px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#1F1E1B;color:#fff;font-size:13px;padding:12px 20px;border-radius:50px;opacity:0;pointer-events:none;transition:.25s;z-index:9;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 27C3.2 17.5 9 6.5 21.5 5.2 30 4.3 34 10.5 31.7 18.8 29.3 27.6 22 33 13.8 31.8 9.8 31.2 7.2 29.4 5.5 27Z" fill="#87A878"/><circle cx="13.2" cy="21.5" r="3.4" fill="#F8F5F0"/><circle cx="20.5" cy="15.8" r="3.4" fill="#F8F5F0"/><circle cx="24.8" cy="23.2" r="3.4" fill="#F8F5F0"/></svg>
+      <strong>毛豆灵感</strong>
+    </div>
+    <span class="header-note">随手收下每个念头</span>
+  </header>
+
+  <section class="hero">
+    <span class="badge"><i></i>想到就记，不用排队</span>
+    <h1>想到什么，<br><em>说一句就记下</em></h1>
+    <p>把零散的需求、点子和吐槽都收在一处。打字或按住说话都行，不用填表，也不用想格式。</p>
+  </section>
+
+  <section class="card">
+    <div class="card-title">
+      <h2>记一条灵感</h2>
+      <span class="save"><i></i>自动保存</span>
+    </div>
+    <div class="tabs">
+      <button class="tab on" id="tabText" type="button">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 6.5h7M4.5 9.5h4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>文字
+      </button>
+      <button class="tab" id="tabVoice" type="button">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="6" y="1.5" width="4" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>语音
+      </button>
+    </div>
+
+    <div class="panel on" id="panelText">
+      <textarea id="textInput" maxlength="500" placeholder="比如：希望导出的时候能一键带上标签…"></textarea>
+      <div class="count-row"><span>想到哪儿写到哪儿，支持多行</span><span id="charCount">0 / 500</span></div>
+      <div class="chips" id="chips">
+        <button class="chip on" type="button" data-tag="产品建议">产品建议</button>
+        <button class="chip" type="button" data-tag="体验吐槽">体验吐槽</button>
+        <button class="chip" type="button" data-tag="随手记">随手记</button>
+      </div>
+      <button class="btn" id="submitText" type="button">提交灵感
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="panel" id="panelVoice">
+      <div class="voice-stage">
+        <div class="wave" id="wave"></div>
+        <div class="timer" id="timer">0:00</div>
+        <div class="voice-tip" id="voiceTip">按住下面的按钮开始说话</div>
+        <div class="rec-btn" id="recBtn"><i></i></div>
+      </div>
+      <p class="rec-label">松手结束录音，也可以顺手加一句文字备注</p>
+      <label class="alt">或选择一段已有录音<input type="file" id="audioFile" accept="audio/*"></label>
+      <div class="clip-preview" id="clipPreview" style="display:none"></div>
+      <input id="voiceNote" type="text" placeholder="给这段语音加个备注（可不填）" style="width:100%;height:46px;border:1px solid #E5E8DF;background:#FBF9F5;border-radius:14px;padding:0 14px;font-family:inherit;font-size:14px;color:#1F1E1B;outline:none;margin-bottom:16px;-webkit-appearance:none">
+      <button class="btn" id="submitVoice" type="button" disabled>提交这条语音
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <div class="sec-head"><h2>刚刚被接住的灵感</h2><span id="ideaCount">0 条</span></div>
+  <div id="ideaList"></div>
+
+  <details>
+    <summary>看看完整设计稿</summary>
+    <img src="assets/design-preview.png" alt="毛豆灵感网站设计稿" loading="lazy">
+  </details>
+
+  <footer>毛豆灵感 · 让好点子有处可去<br>灵感保存在你当前的浏览器里，不会上传到服务器</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var KEY='maodou_ideas_v1';
+  var items=[];
+  try{ items=JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ items=[]; }
+  if(!Array.isArray(items)) items=[];
+
+  var $=function(id){return document.getElementById(id);};
+  var toastTimer=null;
+  function toast(msg){
+    var t=$('toast'); t.textContent=msg; t.className='toast show';
+    clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.className='toast';},2200);
+  }
+  function save(){
+    try{ localStorage.setItem(KEY,JSON.stringify(items)); }
+    catch(e){
+      for(var i=0;i<items.length;i++){ if(items[i].audio){ delete items[i].audio; break; } }
+      try{ localStorage.setItem(KEY,JSON.stringify(items)); }catch(e2){}
+    }
+    if(items.length>30) items=items.slice(0,30);
+  }
+  function pad(n){return n<10?'0'+n:''+n;}
+  function fmt(ts){
+    var d=new Date(ts),now=new Date();
+    var hm=pad(d.getHours())+':'+pad(d.getMinutes());
+    if(d.toDateString()===now.toDateString()) return '今天 '+hm;
+    return (d.getMonth()+1)+'月'+d.getDate()+'日 '+hm;
+  }
+  function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function render(){
+    var box=$('ideaList');
+    $('ideaCount').textContent=items.length+' 条';
+    if(!items.length){
+      box.innerHTML='<div class="empty">还没有灵感，先写一句或者说一段吧<br>提交后就会出现在这里</div>';
+      return;
+    }
+    var html='';
+    for(var i=0;i<items.length;i++){
+      var it=items[i];
+      if(it.type==='voice'){
+        html+='<div class="idea voice"><div class="idea-top"><span class="idea-tag">语音 '+esc(it.duration||'')+'</span><span class="idea-meta">'+esc(fmt(it.ts))+'</span></div>';
+        html+=it.audio?'<audio controls src="'+it.audio+'"></audio>':'<div class="idea-meta" style="margin:8px 0">音频已过期，仅保留记录</div>';
+        html+='<div class="idea-body">'+esc(it.content||'（未加备注）')+'</div>';
+      }else{
+        html+='<div class="idea"><div class="idea-top"><span class="idea-tag">'+esc(it.tag||'随手记')+'</span><span class="idea-meta">'+esc(fmt(it.ts))+'</span></div>';
+        html+='<div class="idea-body">'+esc(it.content)+'</div>';
+      }
+      html+='<button class="idea-del" type="button" data-del="'+i+'">删除这条</button></div>';
+    }
+    box.innerHTML=html;
+  }
+  $('ideaList').addEventListener('click',function(e){
+    var idx=e.target.getAttribute&&e.target.getAttribute('data-del');
+    if(idx!==null&&idx!==undefined){ items.splice(parseInt(idx,10),1); save(); render(); toast('已删除'); }
+  });
+  function add(it){
+    items.unshift(it); save(); render(); toast('收下了，灵感已记下');
+    var el=$('ideaList'); if(el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  /* tabs */
+  $('tabText').onclick=function(){ $('tabText').className='tab on'; $('tabVoice').className='tab'; $('panelText').className='panel on'; $('panelVoice').className='panel'; };
+  $('tabVoice').onclick=function(){ $('tabVoice').className='tab on'; $('tabText').className='tab'; $('panelVoice').className='panel on'; $('panelText').className='panel'; };
+
+  /* text */
+  var currentTag='产品建议';
+  $('chips').addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('.chip'):null;
+    if(!b) return;
+    var cs=document.querySelectorAll('.chip');
+    for(var i=0;i<cs.length;i++) cs[i].className='chip';
+    b.className='chip on'; currentTag=b.getAttribute('data-tag');
+  });
+  $('textInput').addEventListener('input',function(){ $('charCount').textContent=this.value.length+' / 500'; });
+  $('submitText').onclick=function(){
+    var v=$('textInput').value.trim();
+    if(!v){ toast('先写点什么吧'); return; }
+    add({type:'text',content:v,tag:currentTag,ts:Date.now()});
+    $('textInput').value=''; $('charCount').textContent='0 / 500';
+  };
+
+  /* voice */
+  var wave=$('wave'),bars=[];
+  for(var i=0;i<22;i++){ var s=document.createElement('span'); s.style.height=(8+(i*7)%26)+'px'; wave.appendChild(s); bars.push(s); }
+  var recorder=null,stream=null,chunks=[],pending=null,recording=false,seconds=0,tick=null,startAt=0;
+
+  function setTimer(sec){ $('timer').textContent='0:'+pad(Math.min(sec,59)); }
+  function resetRec(){
+    recording=false; wave.className='wave'; $('recBtn').className='rec-btn';
+    clearInterval(tick); tick=null;
+  }
+  function blobToDataURL(blob){
+    return new Promise(function(resolve,reject){
+      var r=new FileReader();
+      r.onload=function(){resolve(r.result);};
+      r.onerror=reject;
+      r.readAsDataURL(blob);
+    });
+  }
+  function setPending(blob){
+    var sec=Math.max(1,Math.round(seconds));
+    if(!sec||isNaN(sec)) sec=1;
+    var dur='0:'+pad(Math.min(sec,59));
+    blobToDataURL(blob).then(function(url){
+      pending={audio:url,duration:dur};
+      var p=$('clipPreview');
+      p.style.display='block';
+      p.innerHTML='录好了 · '+dur+'<audio controls src="'+url+'"></audio>';
+      $('submitVoice').disabled=false;
+      $('voiceTip').textContent='可以试听，满意就提交';
+    }).catch(function(){ toast('录音读取失败，再试一次'); });
+  }
+  function stopRec(){
+    if(!recording) return;
+    resetRec();
+    try{ recorder.stop(); }catch(e){}
+    seconds=Math.max(seconds,(Date.now()-startAt)/1000);
+  }
+  function startRec(){
+    if(recording) return;
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==='undefined'){
+      $('voiceTip').textContent='这个浏览器不支持直接录音，请用下方「选择一段已有录音」';
+      toast('请用「选择一段已有录音」');
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){
+      stream=s;
+      var mime='';
+      var opts=['audio/webm;codecs=opus','audio/mp4','audio/webm',''];
+      for(var i=0;i<opts.length;i++){
+        if(!opts[i]||(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(opts[i]))){ mime=opts[i]; break; }
+      }
+      try{ recorder=mime?new MediaRecorder(s,{mimeType:mime}):new MediaRecorder(s); }
+      catch(e){ recorder=new MediaRecorder(s); }
+      chunks=[]; seconds=0; startAt=Date.now();
+      recorder.ondataavailable=function(e){ if(e.data&&e.data.size>0) chunks.push(e.data); };
+      recorder.onstop=function(){
+        if(stream&&stream.getTracks) stream.getTracks().forEach(function(t){try{t.stop();}catch(e){}});
+        stream=null;
+        if(chunks.length){ setPending(new Blob(chunks,{type:chunks[0].type||'audio/webm'})); }
+        else { $('voiceTip').textContent='没录到声音，再按一次试试'; }
+      };
+      recorder.start();
+      recording=true;
+      wave.className='wave active'; $('recBtn').className='rec-btn recording';
+      $('voiceTip').textContent='正在录音，松手结束';
+      setTimer(0);
+      tick=setInterval(function(){ seconds=(Date.now()-startAt)/1000; setTimer(Math.floor(seconds)); if(seconds>=60) stopRec(); },200);
+    }).catch(function(){
+      $('voiceTip').textContent='麦克风没打开，可以用下方「选择一段已有录音」';
+      toast('麦克风没打开，可改用文件选择');
+    });
+  }
+  var rb=$('recBtn');
+  rb.addEventListener('touchstart',function(e){ e.preventDefault(); startRec(); },{passive:false});
+  rb.addEventListener('touchend',function(e){ e.preventDefault(); stopRec(); },{passive:false});
+  rb.addEventListener('touchcancel',function(e){ e.preventDefault(); stopRec(); },{passive:false});
+  rb.addEventListener('mousedown',function(e){ if(!('ontouchstart' in window)){ e.preventDefault(); startRec(); } });
+  document.addEventListener('mouseup',function(){ if(!('ontouchstart' in window)) stopRec(); });
+
+  $('audioFile').addEventListener('change',function(){
+    var f=this.files&&this.files[0];
+    if(!f) return;
+    blobToDataURL(f).then(function(url){
+      pending={audio:url,duration:'0:00'};
+      var p=$('clipPreview'); p.style.display='block';
+      p.innerHTML='已选择：'+esc(f.name)+'<audio controls src="'+url+'"></audio>';
+      $('submitVoice').disabled=false;
+      $('voiceTip').textContent='可以试听，满意就提交';
+    }).catch(function(){ toast('文件读取失败'); });
+    this.value='';
+  });
+  $('submitVoice').onclick=function(){
+    if(!pending){ toast('先录一段或选一段录音'); return; }
+    add({type:'voice',content:$('voiceNote').value.trim(),audio:pending.audio,duration:pending.duration,ts:Date.now()});
+    pending=null; $('clipPreview').style.display='none'; $('clipPreview').innerHTML='';
+    $('voiceNote').value=''; $('submitVoice').disabled=true;
+    setTimer(0); $('voiceTip').textContent='按住下面的按钮开始说话';
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
